@@ -1,0 +1,25 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "fitquest-a53c7",
+                    "appId": "1:1036570077631:android:6d4342120a8dd4eb13590a",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "fitquest-a53c7",
+                    "configurations": {
+                        "android": "1:1036570077631:android:6d4342120a8dd4eb13590a",
+                        "ios": "1:1036570077631:ios:99feabbbf919d9a113590a",
+                        "macos": "1:1036570077631:ios:99feabbbf919d9a113590a",
+                        "web": "1:1036570077631:web:1969f07beec544f413590a",
+                        "windows": "1:1036570077631:web:8401cc611193abe013590a"
+                    }
+                }
+            }
+        }
+    }
+}

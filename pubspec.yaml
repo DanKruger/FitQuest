@@ -1,0 +1,59 @@
+name: fitquest
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+    sdk: ^3.5.4
+
+dependencies:
+    flutter:
+        sdk: flutter
+    firebase_ui_auth: ^1.16.0
+    firebase_auth: ^5.3.3
+    provider: ^6.1.2
+    sqflite: ^2.4.1
+    firebase_core: ^3.8.0
+    cloud_firestore: ^5.5.0
+    dio: ^5.7.0
+    retrofit: ^4.4.1
+    path: ^1.9.0
+    get_it: ^8.0.2
+    flutter_map: ^7.0.2
+    latlong2: ^0.9.1
+    geolocator: ^13.0.2
+    google_sign_in: ^6.2.2
+    flutter_animate: ^4.5.2
+    location: ^7.0.1
+    connectivity_plus: ^6.1.0
+    sprintf: ^7.0.0
+    loading_animation_widget: ^1.3.0
+    flutter_svg: ^2.0.16
+    # mapbox_maps_flutter: ^2.4.1
+
+dev_dependencies:
+    flutter_test:
+        sdk: flutter
+    flutter_lints: ^4.0.0
+
+flutter:
+    uses-material-design: true
+    assets:
+        - assets/fitquest.svg
+        - assets/fitquest.png
+        - assets/friends_screen_light.svg
+        - assets/history_screen_light.svg
+        - assets/welcome_screen_1_light.svg
+        - assets/welcome_screen_2_light.svg
+        - assets/welcome_screen_3_light.svg
+        - assets/friends_screen_dark.svg
+        - assets/history_screen_dark.svg
+        - assets/welcome_screen_1_dark.svg
+        - assets/welcome_screen_2_dark.svg
+        - assets/welcome_screen_3_dark.svg
+fonts:
+    - family: InterVariable
+      fonts:
+          - asset: fonts/InterVariable.ttf
+          - asset: fonts/InterVariable-Italic.ttf
+            style: italic
