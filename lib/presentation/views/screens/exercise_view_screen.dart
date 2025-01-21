@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:fitquest/data/models/excercise_model.dart';
 import 'package:fitquest/presentation/viewmodels/excercise_viewmodel.dart';
 import 'package:fitquest/presentation/views/screens/run_screen.dart';
@@ -37,42 +39,78 @@ class _ExerciseViewScreenState extends State<ExerciseViewScreen> {
       ),
       extendBodyBehindAppBar: true,
       body: Center(
-        child: Column(
+        child: Stack(
           children: [
             _buildMap(mapVariant, theme, screenSize),
-            _buildInfo(screenSize, theme),
             const SizedBox(height: 25),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: TextButton(
-                      onPressed: () {
-                        _showConfirmationDialog(viewModel, context);
-                      },
-                      child: const Text('Remove from history'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: Container(
-                      clipBehavior: Clip.none,
-                      height: 40,
-                      decoration: neumorphicBoxDecoration(9999, theme),
-                      child: TextButton(
-                        onPressed: _replayRun, // Call replay on button press
-                        child: const Text('Replay'),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  // width: screenSize.width * 0.9,
+                  height: screenSize.height * 0.25,
+                  child: ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: theme.onSurface.withOpacity(0.1),
+                              width: 1,
+                            )),
+                        // color: theme.surface.withOpacity(0.2),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildInfo(screenSize, theme),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        _showConfirmationDialog(
+                                            viewModel, context);
+                                      },
+                                      child: const Text('Remove from history'),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: Container(
+                                      clipBehavior: Clip.none,
+                                      height: 40,
+                                      decoration:
+                                          neumorphicBoxDecoration(9999, theme),
+                                      child: TextButton(
+                                        onPressed:
+                                            _replayRun, // Call replay on button press
+                                        child: const Text('Replay'),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ).animate().fadeIn(
+                                    delay: 200.ms,
+                                    curve: Curves.easeInOut,
+                                  ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ],
-              ).animate().fadeIn(
-                    delay: 200.ms,
-                    curve: Curves.easeInOut,
-                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -135,62 +173,118 @@ class _ExerciseViewScreenState extends State<ExerciseViewScreen> {
   }
 
   void _animateMovement() async {
-    for (int i = 0; i < widget.exerciseModel.route.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      setState(() {
-        _route.add(widget.exerciseModel.route[i]);
-        _mapController.move(
-          _route[i],
-          19.0,
-        );
-      });
+    // for (int i = 0; i < widget.exerciseModel.route.length; i++) {
+    //   await Future.delayed(const Duration(milliseconds: 200));
+    //   setState(() {
+    //     _route.add(widget.exerciseModel.route[i]);
+    //     _mapController.move(
+    //       _route[i],
+    //       17.0,
+    //     );
+    //   });
+    // }
+    // Add the first point to the route
+    setState(() {
+      _route.add(widget.exerciseModel.route[0]);
+    });
+    final Distance distanceCalculator = Distance();
+    double totalDistance = 0.0; // Cumulative distance tracker
+    for (int i = 0; i < widget.exerciseModel.route.length - 1; i++) {
+      LatLng start = widget.exerciseModel.route[i];
+      LatLng end = widget.exerciseModel.route[i + 1];
+
+      const int steps = 30; // Number of intermediate points
+      for (int step = 1; step <= steps; step++) {
+        double t = step / steps; // Interpolation factor (0 to 1)
+
+        // Linearly interpolate latitude and longitude
+        double interpolatedLat = start.latitude + (end.latitude - start.latitude) * t;
+        double interpolatedLng = start.longitude + (end.longitude - start.longitude) * t;
+
+        LatLng intermediatePoint = LatLng(interpolatedLat, interpolatedLng);
+// Calculate distance between the previous and current point
+        double segmentDistance = distanceCalculator.as(LengthUnit.Meter, start, end);
+        double intermediateHeight = _calculateCorrectHeight(segmentDistance);
+        // Update the route and move the camera smoothly
+        setState(() {
+          _route.add(intermediatePoint); // Gradually extend the polyline
+          _mapController.move(intermediatePoint, intermediateHeight); // Smooth camera movement
+        });
+
+        // Add a delay for smooth animation
+        await Future.delayed(const Duration(milliseconds: 6));
+      }
+    }
+
+    // Ensure the final point is included in the route
+    setState(() {
+      _route.add(widget.exerciseModel.route.last);
+    });
+  }
+
+  double _calculateCorrectHeight(double distance) {
+    if (distance > 40) {
+      return 16.0; // Minimum zoom for very large distances
+    } else if (distance > 35) {
+      return 16.2 + (distance - 35) * (16.0 - 16.2) / (40.0 - 35.0); // Interpolate between 16.2 and 16.0
+    } else if (distance > 30) {
+      return 16.5 + (distance - 30) * (16.2 - 16.5) / (35.0 - 30.0); // Interpolate between 16.5 and 16.2
+    } else if (distance > 25) {
+      return 16.8 + (distance - 25) * (16.5 - 16.8) / (30.0 - 25.0); // Interpolate between 16.8 and 16.5
+    } else if (distance > 20) {
+      return 17.2 + (distance - 20) * (16.8 - 17.2) / (25.0 - 20.0); // Interpolate between 17.2 and 16.8
+    } else if (distance > 15) {
+      return 17.6 + (distance - 15) * (17.2 - 17.6) / (20.0 - 15.0); // Interpolate between 17.6 and 17.2
+    } else if (distance > 10) {
+      return 18.0 + (distance - 10) * (17.6 - 18.0) / (15.0 - 10.0); // Interpolate between 18.0 and 17.6
+    } else if (distance > 5) {
+      return 18.5 + (distance - 5) * (18.0 - 18.5) / (10.0 - 5.0); // Interpolate between 18.5 and 18.0
+    } else {
+      return 19.0; // Maximum zoom for very short distances
     }
   }
 
   Widget _buildInfo(Size screenSize, theme) {
-    return Container(
-      // decoration: neumorphicBoxDecoration(15, theme),
+    return SizedBox(
       width: screenSize.width,
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  formatDateTime(widget.exerciseModel.date),
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-                Text(
-                  widget.exerciseModel.type,
-                  style: const TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ],
-            ),
-            Wrap(
-              children: [
-                Row(
-                  children: [
-                    const Text("Distance:"),
-                    const SizedBox(width: 15),
-                    Text("${widget.exerciseModel.distance.floor()} m")
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text("Duration:"),
-                    const SizedBox(width: 15),
-                    Text(formatTime(widget.exerciseModel.duration))
-                  ],
-                ),
-              ],
-            ),
-            // Map display for the run
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                formatDateTime(widget.exerciseModel.date),
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+              Text(
+                widget.exerciseModel.type,
+                style: const TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ],
+          ),
+          Wrap(
+            children: [
+              Row(
+                children: [
+                  const Text("Distance:"),
+                  const SizedBox(width: 15),
+                  Text("${widget.exerciseModel.distance.floor()} m")
+                ],
+              ),
+              Row(
+                children: [
+                  const Text("Duration:"),
+                  const SizedBox(width: 15),
+                  Text(formatTime(widget.exerciseModel.duration))
+                ],
+              ),
+            ],
+          ),
+          // Map display for the run
+        ],
       ),
     );
   }
@@ -203,10 +297,11 @@ class _ExerciseViewScreenState extends State<ExerciseViewScreen> {
     return Container(
       clipBehavior: Clip.none,
       width: screenSize.width,
-      height: screenSize.height * 0.5,
+      height: screenSize.height,
       child: FlutterMap(
         mapController: _mapController,
         options: MapOptions(
+          backgroundColor: theme.surface,
           initialCenter: initPosition,
           initialZoom: 19.0,
           maxZoom: 24.0,
