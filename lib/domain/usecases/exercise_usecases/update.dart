@@ -10,45 +10,56 @@ Future<void> updateCache(
     RemoteStoreRepository remoteRepo,
     String userId,
     {bool newTimeStamp = true}) async {
+  // Determine the timestamp status
   HistoryTimestamp timestampData =
-      await cacheService.compareTimestampWithCurrentTime(userId);
+  await cacheService.compareTimestampWithCurrentTime(userId);
 
   var upToDateTimestamp = timestampData == HistoryTimestamp.newer;
   var outdatedTimestamp = timestampData == HistoryTimestamp.old;
   var noTimestamp = timestampData == HistoryTimestamp.none;
+  bool isUpToDate = timestampData == HistoryTimestamp.newer;
+  bool isOutdated = timestampData == HistoryTimestamp.old;
+  bool hasNoTimestamp = timestampData == HistoryTimestamp.none;
 
-  var localData =
-      await localRepo.getAllExercises(userId); // Get saved local exercises
-  await cacheService.cacheHistory(userId, localData ?? [],
-      addNewTimestamp: false); // Cache local exercises
-
-  void filterList(List<dynamic> list1, List<dynamic> list2) {
-    list2.removeWhere((item) => list1.contains(item));
+  // Retrieve local data and cache it
+  var localData = await localRepo.getAllExercises(userId);
+  await cacheService.cacheHistory(userId, localData!, addNewTimestamp: false);
+  // Filter helper function
+  void filterList(List<dynamic> source, List<dynamic> target) {
+    target.removeWhere(source.contains);
   }
 
-  if (outdatedTimestamp) {
-    // Remove any leftovers from remote (deleted locally, still in remote)
-    var cached = await cacheService.getCachedHistory(
-        userId); // Get what is cached (locally saved included)
-    var remoteData =
-        await remoteRepo.getAllExercises(userId); // Get what is in remote
-    filterList(cached, remoteData!); // Filter out what is not in cached
-
-    for (var item in remoteData) {
-      await remoteRepo.deleteExerciseById(item?.id ?? 0); // Delete from remote
+  // Handle the case where there is no timestamp
+  if (hasNoTimestamp) {
+    // If there is no cache yet then it probably means this is a new device
+    // So user probably has saved exercises in the cloud, so try to sync any
+    // remote data locally
+    // This is only supposed to run once
+    List<ExerciseModel?>? remoteData = await remoteRepo.getAllExercises(userId);
+    if (remoteData != null) {
+      var combinedData = {...localData, ...remoteData}.toList();
+      filterList(localData, combinedData);
+      for (var exercise in combinedData) {
+        await localRepo.saveExercise(exercise!);
+      }
     }
   }
-  if (outdatedTimestamp) {
-    // Add local exercises missing from remote (added locally, not in remote yet)
-    var cached =
-        await cacheService.getCachedHistory(userId); // Get what is cached
-    var remoteData =
-        await remoteRepo.getAllExercises(userId); // Get what is in remote
-    filterList(remoteData!, cached); // Filter out what is not in remote data
-    for (var thing in cached) {
-      // Loop through cache
-      await remoteRepo
-          .saveExercise(thing); // Add what is in the cache to remote
+
+  if (isOutdated) {
+    // Handle removing stale remote data
+    var cachedData = await cacheService.getCachedHistory(userId);
+    var remoteData = await remoteRepo.getAllExercises(userId) ?? [];
+
+    // Remove remote exercises not present in the cache
+    filterList(cachedData, remoteData);
+    for (var exercise in remoteData) {
+      await remoteRepo.deleteExerciseById(exercise?.id ?? 0);
+    }
+
+    // Handle adding missing local data to remote
+    filterList(remoteData, cachedData);
+    for (var exercise in cachedData) {
+      await remoteRepo.saveExercise(exercise);
     }
   }
 }

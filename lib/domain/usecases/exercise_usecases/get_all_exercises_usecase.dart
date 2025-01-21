@@ -42,7 +42,7 @@ class GetAllExercisesUsecase {
           ? await _cachingService.getCachedHistory(id)
           : await _local.getAllExercises(id);
 
-      List<ExerciseModel?>? remoteData = outdatedTimestamp
+      List<ExerciseModel?>? remoteData = outdatedTimestamp || noTimestamp
           ? await _remote.getAllExercises(id)
           : await _local.getAllExercises(id);
 
