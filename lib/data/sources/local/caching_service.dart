@@ -18,26 +18,14 @@ class CachingService {
     return _database!;
   }
 
-  Future<void> deleteDatabaseFile() async {
-    // Get the database path
-    final dbPath = await getDatabasesPath();
-    final dbName = 'fitquest.db'; // Replace with your database name
-    final dbFullPath = join(dbPath, dbName);
-
-    // Delete the database file
-    await deleteDatabase(dbFullPath);
-    print('Database deleted: $dbFullPath');
-  }
 
   Future<void> cacheHistory(String userId, List<ExerciseModel?> history,
       {bool addNewTimestamp = true}) async {
     var db = await database;
     String serializedHistory = jsonEncode(
-      history
-          .map(
+      history.map(
             (exercise) => exercise?.toJson(),
-          )
-          .toList(),
+          ).toList(),
     );
 
     var time = DateTime.now();
