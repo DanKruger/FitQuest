@@ -4,6 +4,8 @@ import 'package:fitquest/data/sources/local/caching_service.dart';
 import 'package:fitquest/domain/repo/local_store_repository.dart';
 import 'package:fitquest/domain/repo/remote_store_repository.dart';
 
+import '../../../data/models/excercise_model.dart';
+
 Future<void> updateCache(
     CachingService cacheService,
     LocalStoreRepository localRepo,
