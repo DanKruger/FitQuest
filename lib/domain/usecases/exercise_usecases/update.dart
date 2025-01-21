@@ -14,9 +14,6 @@ Future<void> updateCache(
   HistoryTimestamp timestampData =
   await cacheService.compareTimestampWithCurrentTime(userId);
 
-  var upToDateTimestamp = timestampData == HistoryTimestamp.newer;
-  var outdatedTimestamp = timestampData == HistoryTimestamp.old;
-  var noTimestamp = timestampData == HistoryTimestamp.none;
   bool isUpToDate = timestampData == HistoryTimestamp.newer;
   bool isOutdated = timestampData == HistoryTimestamp.old;
   bool hasNoTimestamp = timestampData == HistoryTimestamp.none;
