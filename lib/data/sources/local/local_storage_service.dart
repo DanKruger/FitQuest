@@ -85,16 +85,6 @@ class LocalStorageService extends DataStoreService {
     );
   }
 
-  Future<void> deleteDatabaseFile() async {
-    // Get the database path
-    final dbPath = await getDatabasesPath();
-    final dbName = 'workouts.db'; // Replace with your database name
-    final dbFullPath = join(dbPath, dbName);
-
-    // Delete the database file
-    await deleteDatabase(dbFullPath);
-    print('Database deleted: $dbFullPath');
-  }
 
   Future _createDB(Database db, int version) async {
     await _createExerciseHistory(db);
