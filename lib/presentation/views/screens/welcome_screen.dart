@@ -3,6 +3,7 @@ import 'package:fitquest/presentation/widgets/button_styles.dart';
 import 'package:fitquest/presentation/widgets/welcome_page_indicator.dart';
 import 'package:fitquest/presentation/widgets/neumorphic_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context).colorScheme;
     setState(() {
       pages = [
         firstScreen(context),
@@ -40,6 +42,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           right: 0,
           child: WelcomePageIndicator(pages: pages, currentPage: currentPage),
         ),
+        Positioned(
+          bottom: 40,
+          left: 0,
+          right: 0,
+          child: TextButton(
+            style: TextButton.styleFrom(
+                foregroundColor: theme.onSurface.withOpacity(0.3)),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const RegisterScreen(),
+                ),
+              );
+            },
+            child: const Text("Skip"),
+          ).animate().fadeIn(delay: 100.ms, duration: 1000.ms),
+        )
       ]),
     );
   }
