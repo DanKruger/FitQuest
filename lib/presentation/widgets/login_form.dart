@@ -96,10 +96,13 @@ class _LoginFormState extends State<LoginForm> {
       TextEditingController password, AuthViewmodel auth) async {
     try {
       UserModel userModel = UserModel(
-          firstName: "User",
-          lastName: "User",
-          email: email.text,
-          password: password.text);
+        firstName: "User",
+        lastName: "User",
+        email: email.text,
+        password: password.text,
+        friends: [],
+        friendRequests: [],
+      );
       await auth.signIn(userModel);
       Navigator.pushReplacement(
         context,

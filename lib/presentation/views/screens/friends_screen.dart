@@ -1,3 +1,4 @@
+import 'package:fitquest/data/models/friend_model.dart';
 import 'package:fitquest/presentation/viewmodels/social_viewmodel.dart';
 import 'package:fitquest/presentation/views/screens/friend_request_screen.dart';
 import 'package:fitquest/presentation/views/screens/search_screen.dart';
@@ -87,8 +88,7 @@ class FriendsList extends StatelessWidget {
         var size = MediaQuery.of(context).size;
         return FutureBuilder(
           future: social.getFriends(),
-          builder:
-              (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+          builder: (context, snapshot) {
             if (!social.isConnected) {
               return const Column(
                 children: [
@@ -117,7 +117,7 @@ class FriendsList extends StatelessWidget {
               return Text("An error occurred ${snapshot.error}");
             }
 
-            List<Map<String, dynamic>>? friends = snapshot.data;
+            List<FriendModel>? friends = snapshot.data;
             if (friends!.isEmpty) {
               return Column(
                 children: [
@@ -134,35 +134,40 @@ class FriendsList extends StatelessWidget {
               );
             }
             return Expanded(
-              child: ListView.separated(
-                itemCount: friends.length,
-                itemBuilder: (context, int index) {
-                  var friend = friends[index];
-                  return ListTile(
-                    leading: const Icon(
-                      Icons.account_circle_outlined,
-                      size: 40,
-                    ),
-                    title: Row(
-                      children: [
-                        Text(friend['first_name']),
-                        const SizedBox(width: 5),
-                        Text(friend['last_name']),
-                      ],
-                    ),
-                    subtitle: Text(friend['email_address']),
-                    trailing: IconButton(
-                      onPressed: () =>
-                          _showConfirmationDialog(context, friend, social),
-                      icon: Icon(Icons.person_remove, color: theme.error),
-                    ),
-                  );
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  social.refreshFriends();
                 },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Divider(
-                    color: theme.surfaceDim,
-                  );
-                },
+                child: ListView.separated(
+                  itemCount: friends.length,
+                  itemBuilder: (context, int index) {
+                    var friend = friends[index];
+                    return ListTile(
+                      leading: const Icon(
+                        Icons.account_circle_outlined,
+                        size: 40,
+                      ),
+                      title: Row(
+                        children: [
+                          Text(friend.firstName),
+                          const SizedBox(width: 5),
+                          Text(friend.lastName),
+                        ],
+                      ),
+                      subtitle: Text(friend.status),
+                      trailing: IconButton(
+                        onPressed: () =>
+                            _showConfirmationDialog(context, friend, social),
+                        icon: Icon(Icons.person_remove, color: theme.error),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                      color: theme.surfaceDim,
+                    );
+                  },
+                ),
               ),
             );
           },
@@ -171,8 +176,8 @@ class FriendsList extends StatelessWidget {
     );
   }
 
-  void _showConfirmationDialog(BuildContext context,
-      Map<String, dynamic>? friend, SocialViewmodel social) {
+  void _showConfirmationDialog(
+      BuildContext context, FriendModel? friend, SocialViewmodel social) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -191,7 +196,7 @@ class FriendsList extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
                   Text(
-                      '${friend?['first_name']} will be removed from your friends list'),
+                      '${friend?.firstName} will be removed from your friends list'),
                   const SizedBox(height: 15),
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -203,11 +208,11 @@ class FriendsList extends StatelessWidget {
                         child: SizedBox.expand(
                           child: TextButton(
                             onPressed: () async {
-                              await social.removeFriend(friend?['friendId']);
+                              await social.removeFriend(friend!.friendId);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                      '${friend?['first_name']} has been removed'),
+                                      '${friend.firstName} has been removed'),
                                 ),
                               );
                               Navigator.pop(context);

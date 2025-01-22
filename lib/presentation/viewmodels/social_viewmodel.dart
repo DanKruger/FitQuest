@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fitquest/data/models/friend_model.dart';
 import 'package:fitquest/data/sources/connectivity_service.dart';
 import 'package:fitquest/domain/usecases/social_usecases/accept_friend_request_usecase.dart';
 import 'package:fitquest/domain/usecases/social_usecases/add_friend_usecase.dart';
@@ -98,7 +99,23 @@ class SocialViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Map<String, dynamic>>> getFriends() async {
-    return await _getAllFriendsUsecase.execute();
+  List<FriendModel>? friends;
+
+  Future<List<FriendModel>> getFriends() async {
+    // TODO rewrite more good
+    if (friends != null) {
+      return Future.value(friends);
+    } else {
+      friends = await _getAllFriendsUsecase.execute();
+      return Future.value(friends);
+    }
+  }
+
+  void refreshFriends() async {
+    var remote = await _getAllFriendsUsecase.execute();
+    if (remote.length != friends?.length) {
+      friends = remote;
+    }
+    notifyListeners();
   }
 }
