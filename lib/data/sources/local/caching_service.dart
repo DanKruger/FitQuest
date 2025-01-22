@@ -74,7 +74,7 @@ class CachingService {
           DateTime.fromMillisecondsSinceEpoch(storedTimestamp);
       DateTime currentTime = DateTime.now();
       Duration difference = currentTime.difference(storedTime);
-      if (difference.inMinutes < 30) {
+      if (difference.inHours < 5) {
         return HistoryTimestamp.newer;
       } else {
         print("Local Exercise Cache is outdated");
