@@ -60,33 +60,43 @@ class ExcerciseHistoryScreen extends StatelessWidget {
                         ),
                       ),
                       const Text("You have no history, go run around a bit"),
+                      TextButton(
+                          onPressed: () {
+                            model.sync();
+                          },
+                          child: const Text("Refresh"))
                     ],
                   ),
                 );
               }
-              return ListView.separated(
-                separatorBuilder: (context, index) {
-                  var theme = Theme.of(context).colorScheme;
-                  return Divider(color: theme.surfaceDim);
+              return RefreshIndicator(
+                onRefresh: () async {
+                  model.sync();
                 },
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  return Center(
-                    child: ExerciseListItem(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ExerciseViewScreen(
-                              exerciseModel: data[index]!,
+                child: ListView.separated(
+                  separatorBuilder: (context, index) {
+                    var theme = Theme.of(context).colorScheme;
+                    return Divider(color: theme.surfaceDim);
+                  },
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    return Center(
+                      child: ExerciseListItem(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ExerciseViewScreen(
+                                exerciseModel: data[index]!,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      exerciseModel: data[index]!,
-                    ),
-                  );
-                },
+                          );
+                        },
+                        exerciseModel: data[index]!,
+                      ),
+                    );
+                  },
+                ),
               );
             },
           );
