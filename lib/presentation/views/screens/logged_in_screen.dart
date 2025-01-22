@@ -92,19 +92,32 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
     );
   }
 
+  bool _isAnimating = false;
+
   void _onNavBarTapped(int index) {
-    // Animate to the selected page
-    _pageController.animateToPage(
+    if (_isAnimating) {
+      return;
+    }
+
+    _isAnimating = true;
+    _pageController
+        .animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
-      curve: Curves.linearToEaseOut,
-    );
+      curve: Curves.fastLinearToSlowEaseIn,
+    )
+        .then((_) {
+      _isAnimating = false;
+    });
     setState(() {
       selectedPage = index;
     });
   }
 
   void _onPageChanged(int index) {
+    if (_isAnimating) {
+      return;
+    }
     setState(() {
       selectedPage = index;
     });
