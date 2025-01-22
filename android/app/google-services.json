@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "1036570077631-4a52rv3mcv37appt9idemr9dmfhhmbgd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fitquest.app",
+            "certificate_hash": "1b9e274adcdcf2c57a3503c2a327454511f11496"
+          }
+        },
+        {
           "client_id": "1036570077631-5o7r39n626fcia798651ankl9pubtsk1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.fitquest.app",
             "certificate_hash": "76d608bbdfa4e15204dbdfcbf6826063286273fb"
+          }
+        },
+        {
+          "client_id": "1036570077631-pl0bug0dp136ed20i5nbt066kbp2n42o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fitquest.app",
+            "certificate_hash": "ce1ff5ccc1b1efade9d9683f77a2a14ad20150e8"
           }
         },
         {
