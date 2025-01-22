@@ -28,6 +28,20 @@ jobs:
               run: |
                   echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/release.keystore
 
+            - name: Configure Signing
+              env:
+                  ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+                  ANDROID_KEYSTORE_KEY_ALIAS: ${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}
+                  ANDROID_KEYSTORE_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}
+              run: |
+                  # Create or modify key.properties file
+                  cat > android/key.properties <<EOL
+                  storePassword=$ANDROID_KEYSTORE_PASSWORD
+                  keyAlias=$ANDROID_KEYSTORE_KEY_ALIAS
+                  keyPassword=$ANDROID_KEYSTORE_KEY_PASSWORD
+                  storeFile=android/app/release.keystore
+                  EOL
+
             - name: Decode and Set Environment Variables
               env:
                   APP_ENV_BASE64: ${{ secrets.APP_ENV_BASE64 }}
