@@ -11,10 +11,11 @@ Future<void> updateCache(
     LocalStoreRepository localRepo,
     RemoteStoreRepository remoteRepo,
     String userId,
-    {bool newTimeStamp = true}) async {
+    {bool newTimeStamp = true,
+    bool forceSync = false}) async {
   // Determine the timestamp status
   HistoryTimestamp timestampData =
-  await cacheService.compareTimestampWithCurrentTime(userId);
+      await cacheService.compareTimestampWithCurrentTime(userId);
 
   bool isUpToDate = timestampData == HistoryTimestamp.newer;
   bool isOutdated = timestampData == HistoryTimestamp.old;
@@ -29,7 +30,7 @@ Future<void> updateCache(
   }
 
   // Handle the case where there is no timestamp
-  if (hasNoTimestamp) {
+  if (hasNoTimestamp || forceSync) {
     // If there is no cache yet then it probably means this is a new device
     // So user probably has saved exercises in the cloud, so try to sync any
     // remote data locally

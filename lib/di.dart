@@ -74,7 +74,7 @@ void _registerServices() {
   );
 
   locate.registerLazySingleton<FirebaseStoreService>(
-    () => FirebaseStoreService(),
+    () => FirebaseStoreService(locate<FirebaseAuthService>().getAuth),
   );
 
   locate.registerLazySingleton<LocalStorageService>(

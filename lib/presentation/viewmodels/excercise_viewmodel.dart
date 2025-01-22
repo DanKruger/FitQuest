@@ -44,6 +44,11 @@ class ExcerciseViewmodel extends ChangeNotifier {
     return data;
   }
 
+  void sync() async {
+    await _getAllExercisesUsecase.executeSync();
+    notifyListeners();
+  }
+
   Future<void> destroyExercise(int id) async {
     await _destroyExerciseUsecase.execute(id);
     notifyListeners();

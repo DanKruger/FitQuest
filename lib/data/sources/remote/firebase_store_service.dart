@@ -8,9 +8,9 @@ class FirebaseStoreService extends DataStoreService {
   late final FirebaseFirestore _firestore;
   late final CollectionReference<Map<String, dynamic>> _collectionReference;
 
-  FirebaseStoreService() {
+  FirebaseStoreService(FirebaseAuth auth) {
     _firestore = FirebaseFirestore.instance;
-    _auth = FirebaseAuth.instance;
+    _auth = auth;
     _collectionReference = _firestore
         .collection('users')
         .doc(_auth.currentUser?.uid)
@@ -37,10 +37,12 @@ class FirebaseStoreService extends DataStoreService {
     try {
       QuerySnapshot<Map<String, dynamic>> snapshot =
           await _collectionReference.get();
+      print(_collectionReference.path);
       List<ExerciseModel> exercises = [];
       for (var exercise in snapshot.docs) {
         exercises.add(ExerciseModel.fromJson(exercise.data()));
       }
+      print(snapshot.docChanges);
       return exercises;
     } on Exception catch (e) {
       throw Exception(

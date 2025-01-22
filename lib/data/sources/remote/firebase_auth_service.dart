@@ -12,6 +12,7 @@ class FirebaseAuthService {
   late final FirebaseFirestore _firestore;
   late final GoogleSignIn _googleSignIn;
   User? loggedInUser;
+  FirebaseAuth get getAuth => _auth;
 
   FirebaseAuthService() {
     _initFirebase();

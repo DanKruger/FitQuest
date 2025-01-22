@@ -25,6 +25,13 @@ class GetAllExercisesUsecase {
         _authRepository = authRepository,
         _cachingService = cachingService;
 
+  Future<List<ExerciseModel?>?> executeSync() async {
+    User? user = await _authRepository.getCurrentUser();
+    String id = user!.uid;
+    updateCache(_cachingService, _local, _remote, id, forceSync: true);
+    return await _local.getAllExercises(id);
+  }
+
   Future<List<ExerciseModel?>?> execute() async {
     User? user = await _authRepository.getCurrentUser();
     String id = user!.uid;
