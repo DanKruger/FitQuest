@@ -25,7 +25,7 @@ class UserModel {
       'first_name': firstName,
       'last_name': lastName,
       'password': password,
-      'email': email,
+      'email_address': email,
       'friends': jsonEncode(
         friends.map((friend) => friend.toJson()).toList(),
       ),
@@ -39,14 +39,13 @@ class UserModel {
     return UserModel(
       firstName: json['first_name'],
       lastName: json['last_name'],
-      email: json['email'],
-      friends: (jsonDecode(json['friends']) as List<Map<String, dynamic>>)
+      email: json['email_address'],
+      friends: (json['friends'] as List<dynamic>)
           .map((friendjson) => FriendModel.fromJson(friendjson))
           .toList(),
-      friendRequests:
-          (jsonDecode(json['friendRequests']) as List<Map<String, dynamic>>)
-              .map((reqjson) => FriendRequest.fromJson(reqjson))
-              .toList(),
+      friendRequests: (json['friendRequests'] as List<dynamic>)
+          .map((reqjson) => FriendRequest.fromJson(reqjson))
+          .toList(),
     );
   }
 }
