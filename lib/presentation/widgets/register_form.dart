@@ -209,10 +209,13 @@ class _RegisterFormState extends State<RegisterForm> {
             if (_formKey.currentState!.validate()) {
               try {
                 UserModel userModel = UserModel(
-                    firstName: fName.text,
-                    lastName: lName.text,
-                    email: email.text,
-                    password: password.text);
+                  firstName: fName.text,
+                  lastName: lName.text,
+                  email: email.text,
+                  password: password.text,
+                  friends: [],
+                  friendRequests: [],
+                );
                 await auth.registerUser(userModel);
                 Navigator.pushReplacement(
                   context,

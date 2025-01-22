@@ -50,6 +50,8 @@ class FirebaseAuthService {
               lastName: newUser.displayName?.split(" ")[1] ?? " User ",
               email: newUser.email ?? " Email ",
               password: "",
+              friendRequests: [],
+              friends: [],
             ));
       }
 
@@ -65,7 +67,7 @@ class FirebaseAuthService {
     try {
       UserCredential cred = await _auth.createUserWithEmailAndPassword(
         email: payload.email,
-        password: payload.password,
+        password: payload.password!,
       );
       newUser = cred.user;
       _saveNewUserInformation(newUser, payload);
@@ -80,7 +82,7 @@ class FirebaseAuthService {
     try {
       UserCredential cred = await _auth.signInWithEmailAndPassword(
         email: payload.email,
-        password: payload.password,
+        password: payload.password!,
       );
       signedInUser = cred.user;
       Map<String, dynamic>? userInfo =

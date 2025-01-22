@@ -25,18 +25,7 @@ class RegisterUserUsecase {
   Future<User?> executeGoogleAuth() async {
     try {
       // TODO check if internet connection then do this
-      User? user = await _remote.signInWithGoogle();
-      if (user != null) {
-        List<String>? names = user.displayName?.split(" ");
-        UserModel newPayload = UserModel(
-          email: user.email!,
-          firstName: names![0],
-          lastName: names[1],
-          password: "",
-        );
-        await _local.registerUser(newPayload);
-      }
-      return user;
+      return await _remote.signInWithGoogle();
     } on Exception catch (e) {
       throw Exception(
           'An error occurred when trying to register user with google $e');
