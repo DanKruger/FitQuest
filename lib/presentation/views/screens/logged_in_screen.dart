@@ -95,22 +95,16 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
   bool _isAnimating = false;
 
   void _onNavBarTapped(int index) {
-    if (_isAnimating) {
-      return;
-    }
-
+    if (_isAnimating) return;
+    final currentIndex = _pageController.page?.round() ?? 0;
+    if (currentIndex == index) return;
     _isAnimating = true;
-    _pageController
-        .animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.fastLinearToSlowEaseIn,
-    )
-        .then((_) {
+    Future.microtask(() async {
+      _pageController.jumpToPage(index);
+      setState(() {
+        selectedPage = index;
+      });
       _isAnimating = false;
-    });
-    setState(() {
-      selectedPage = index;
     });
   }
 
