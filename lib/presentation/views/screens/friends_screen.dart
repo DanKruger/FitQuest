@@ -1,3 +1,4 @@
+import 'package:fitquest/data/models/friend_model.dart';
 import 'package:fitquest/presentation/viewmodels/social_viewmodel.dart';
 import 'package:fitquest/presentation/views/screens/friend_request_screen.dart';
 import 'package:fitquest/presentation/views/screens/search_screen.dart';
@@ -87,8 +88,7 @@ class FriendsList extends StatelessWidget {
         var size = MediaQuery.of(context).size;
         return FutureBuilder(
           future: social.getFriends(),
-          builder:
-              (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+          builder: (context, snapshot) {
             if (!social.isConnected) {
               return const Column(
                 children: [
@@ -117,7 +117,7 @@ class FriendsList extends StatelessWidget {
               return Text("An error occurred ${snapshot.error}");
             }
 
-            List<Map<String, dynamic>>? friends = snapshot.data;
+            List<FriendModel>? friends = snapshot.data;
             if (friends!.isEmpty) {
               return Column(
                 children: [
@@ -145,12 +145,11 @@ class FriendsList extends StatelessWidget {
                     ),
                     title: Row(
                       children: [
-                        Text(friend['first_name']),
+                        Text(friend.firstName),
                         const SizedBox(width: 5),
-                        Text(friend['last_name']),
+                        Text(friend.lastName),
                       ],
                     ),
-                    subtitle: Text(friend['email_address']),
                     trailing: IconButton(
                       onPressed: () =>
                           _showConfirmationDialog(context, friend, social),
@@ -171,8 +170,8 @@ class FriendsList extends StatelessWidget {
     );
   }
 
-  void _showConfirmationDialog(BuildContext context,
-      Map<String, dynamic>? friend, SocialViewmodel social) {
+  void _showConfirmationDialog(
+      BuildContext context, FriendModel? friend, SocialViewmodel social) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -191,7 +190,7 @@ class FriendsList extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
                   Text(
-                      '${friend?['first_name']} will be removed from your friends list'),
+                      '${friend?.firstName} will be removed from your friends list'),
                   const SizedBox(height: 15),
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -203,11 +202,11 @@ class FriendsList extends StatelessWidget {
                         child: SizedBox.expand(
                           child: TextButton(
                             onPressed: () async {
-                              await social.removeFriend(friend?['friendId']);
+                              await social.removeFriend(friend!.friendId);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                      '${friend?['first_name']} has been removed'),
+                                      '${friend.firstName} has been removed'),
                                 ),
                               );
                               Navigator.pop(context);
