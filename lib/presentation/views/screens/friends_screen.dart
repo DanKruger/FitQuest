@@ -134,34 +134,40 @@ class FriendsList extends StatelessWidget {
               );
             }
             return Expanded(
-              child: ListView.separated(
-                itemCount: friends.length,
-                itemBuilder: (context, int index) {
-                  var friend = friends[index];
-                  return ListTile(
-                    leading: const Icon(
-                      Icons.account_circle_outlined,
-                      size: 40,
-                    ),
-                    title: Row(
-                      children: [
-                        Text(friend.firstName),
-                        const SizedBox(width: 5),
-                        Text(friend.lastName),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      onPressed: () =>
-                          _showConfirmationDialog(context, friend, social),
-                      icon: Icon(Icons.person_remove, color: theme.error),
-                    ),
-                  );
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  social.refreshFriends();
                 },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Divider(
-                    color: theme.surfaceDim,
-                  );
-                },
+                child: ListView.separated(
+                  itemCount: friends.length,
+                  itemBuilder: (context, int index) {
+                    var friend = friends[index];
+                    return ListTile(
+                      leading: const Icon(
+                        Icons.account_circle_outlined,
+                        size: 40,
+                      ),
+                      title: Row(
+                        children: [
+                          Text(friend.firstName),
+                          const SizedBox(width: 5),
+                          Text(friend.lastName),
+                        ],
+                      ),
+                      subtitle: Text(friend.status),
+                      trailing: IconButton(
+                        onPressed: () =>
+                            _showConfirmationDialog(context, friend, social),
+                        icon: Icon(Icons.person_remove, color: theme.error),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                      color: theme.surfaceDim,
+                    );
+                  },
+                ),
               ),
             );
           },
