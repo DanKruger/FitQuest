@@ -39,7 +39,7 @@ jobs:
                   storePassword=$ANDROID_KEYSTORE_PASSWORD
                   keyAlias=$ANDROID_KEYSTORE_KEY_ALIAS
                   keyPassword=$ANDROID_KEYSTORE_KEY_PASSWORD
-                  storeFile=android/app/release.keystore
+                  storeFile=release.keystore
                   EOL
 
             - name: Decode and Set Environment Variables
@@ -55,7 +55,7 @@ jobs:
                   ANDROID_KEYSTORE_KEY_ALIAS: ${{ secrets.ANDROID_KEYSTORE_KEY_ALIAS }}
                   ANDROID_KEYSTORE_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_KEY_PASSWORD }}
               run: |
-                  flutter build apk --dart-define-from-file=.env --build-name=${{ github.ref_name }} --build-number=${{ github.run_number }}
+                  flutter build apk --release --dart-define-from-file=.env --build-name=${{ github.ref_name }} --build-number=${{ github.run_number }}
 
             - name: Upload APK to Release
               uses: softprops/action-gh-release@v1
