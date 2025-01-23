@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import "package:flutter_animate/flutter_animate.dart";
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -198,12 +199,7 @@ Widget buildAuthButtons() {
                   onPressed: () {
                     _signInWithGoogle(auth, context);
                   },
-                  child: auth.isConnected
-                      ? Image.network(
-                          'http://pngimg.com/uploads/google/google_PNG19635.png',
-                          fit: BoxFit.cover,
-                        )
-                      : const Text("Google"))),
+                  child: const Icon(FontAwesomeIcons.google))),
           // const SizedBox(
           //   width: 15,
           // ),
