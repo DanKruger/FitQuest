@@ -59,12 +59,14 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
         ),
         NavigationDestination(
           selectedIcon: Icon(
-            FontAwesomeIcons.personRunning,
+            FontAwesomeIcons.clipboardList,
             color: theme.primary,
+            size: 18,
           ),
           icon: Icon(
-            FontAwesomeIcons.personRunning,
+            FontAwesomeIcons.clipboard,
             color: theme.onSurfaceVariant,
+            size: 18,
           ),
           label: 'History',
         ),
