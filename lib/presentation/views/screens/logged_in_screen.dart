@@ -3,6 +3,7 @@ import 'package:fitquest/presentation/views/screens/friends_screen.dart';
 import 'package:fitquest/presentation/views/screens/home_screen.dart';
 import 'package:fitquest/presentation/views/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoggedInScreen extends StatefulWidget {
   const LoggedInScreen({super.key});
@@ -57,11 +58,11 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
         ),
         NavigationDestination(
           selectedIcon: Icon(
-            Icons.directions_run_rounded,
+            FontAwesomeIcons.personRunning,
             color: theme.onPrimary,
           ),
           icon: Icon(
-            Icons.directions_run_outlined,
+            FontAwesomeIcons.personRunning,
             color: theme.onSurfaceVariant,
           ),
           label: 'History',
