@@ -16,6 +16,7 @@ class HomePageWelcomeBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<AuthViewmodel, SocialViewmodel>(
         builder: (context, authViewmodel, social, child) {
+      var theme = Theme.of(context).colorScheme;
       return FutureBuilder(
           future: authViewmodel.currentUser,
           builder: (context, auth) {
@@ -65,14 +66,16 @@ class HomePageWelcomeBar extends StatelessWidget {
                             return FloatingActionButton(
                               onPressed: () =>
                                   _navigateToNotificationsScreen(context),
+                              backgroundColor: theme.primary.withOpacity(0.2),
+                              foregroundColor: theme.primary,
+                              elevation: 0,
                               child: hasFriendRequests
                                   ? const Icon(FontAwesomeIcons.solidBell)
                                       .animate()
                                       .shake(delay: 1000.ms, duration: 1000.ms)
                                       .then()
                                       .shake(delay: 1000.ms, duration: 1000.ms)
-                                  : const Icon(
-                                      FontAwesomeIcons.bell),
+                                  : const Icon(FontAwesomeIcons.bell),
                             );
                           })
                     ],
