@@ -5,6 +5,7 @@ import 'package:fitquest/presentation/views/screens/notifications_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePageWelcomeBar extends StatelessWidget {
   const HomePageWelcomeBar({
@@ -65,13 +66,13 @@ class HomePageWelcomeBar extends StatelessWidget {
                               onPressed: () =>
                                   _navigateToNotificationsScreen(context),
                               child: hasFriendRequests
-                                  ? const Icon(Icons.notifications_rounded)
+                                  ? const Icon(FontAwesomeIcons.solidBell)
                                       .animate()
                                       .shake(delay: 1000.ms, duration: 1000.ms)
                                       .then()
                                       .shake(delay: 1000.ms, duration: 1000.ms)
                                   : const Icon(
-                                      Icons.notifications_none_rounded),
+                                      FontAwesomeIcons.bell),
                             );
                           })
                     ],
