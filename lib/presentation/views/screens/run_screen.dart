@@ -65,9 +65,9 @@ class _RunScreenState extends State<RunScreen> {
   @override
   Widget build(BuildContext context) {
     var authModel = Provider.of<AuthViewmodel>(context);
+    var theme = Theme.of(context).colorScheme;
     return Consumer<MapViewmodel>(
       builder: (_, map, child) {
-        var theme = Theme.of(context).colorScheme;
         if (map.currentPosition == null) {
           map.getCurrentLocation();
           // TODO center map when position changes
@@ -133,16 +133,17 @@ class _RunScreenState extends State<RunScreen> {
           Positioned(
             bottom: 20,
             right: 20,
-            child: _buildResetMapButton(map),
+            child: _buildResetMapButton(map, theme),
           ),
         ],
       ).animate().fadeIn(duration: 500.ms),
     );
   }
 
-  FloatingActionButton _buildResetMapButton(MapViewmodel map) {
+  FloatingActionButton _buildResetMapButton(MapViewmodel map, theme) {
     return FloatingActionButton(
       shape: const CircleBorder(),
+      foregroundColor: theme.surface,
       onPressed: () async {
         await map.getCurrentLocation();
         _mapController.moveAndRotate(
