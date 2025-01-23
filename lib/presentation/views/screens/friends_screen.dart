@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FriendsScreen extends StatelessWidget {
   const FriendsScreen({super.key});
@@ -144,8 +145,8 @@ class FriendsList extends StatelessWidget {
                     var friend = friends[index];
                     return ListTile(
                       leading: const Icon(
-                        Icons.account_circle_outlined,
-                        size: 40,
+                        FontAwesomeIcons.user,
+                        size: 30,
                       ),
                       title: Row(
                         children: [
