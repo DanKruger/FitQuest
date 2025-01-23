@@ -1,13 +1,13 @@
 class FriendRequest {
   final String fromId;
   final String fromUser;
-  final String forUser;
+  // final String forUser;
   final DateTime timestamp;
 
   FriendRequest({
     required this.fromId,
     required this.fromUser,
-    required this.forUser,
+    // required this.forUser,
     required this.timestamp,
   });
 
@@ -15,7 +15,7 @@ class FriendRequest {
     return {
       "fromId": fromId,
       "fromUser": fromUser,
-      "forUser": forUser,
+      // "forUser": forUser,
       "timestamp": timestamp.toIso8601String(),
     };
   }
@@ -24,7 +24,7 @@ class FriendRequest {
     return FriendRequest(
       fromId: json['fromId'],
       fromUser: json['fromUser'],
-      forUser: json['forUser'],
+      // forUser: json['forUser'],
       timestamp: DateTime.parse(json['timestamp']),
     );
   }
