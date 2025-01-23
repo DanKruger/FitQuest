@@ -40,6 +40,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
     return NavigationBar(
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       onDestinationSelected: _onNavBarTapped,
+      indicatorColor: theme.primary.withOpacity(0.2),
       overlayColor: WidgetStateProperty.resolveWith<Color?>((_) {
         return Colors.transparent;
       }),
@@ -48,7 +49,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
         NavigationDestination(
           selectedIcon: Icon(
             Icons.home_rounded,
-            color: theme.onPrimary,
+            color: theme.primary,
           ),
           icon: Icon(
             Icons.home_outlined,
@@ -59,7 +60,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
         NavigationDestination(
           selectedIcon: Icon(
             FontAwesomeIcons.personRunning,
-            color: theme.onPrimary,
+            color: theme.primary,
           ),
           icon: Icon(
             FontAwesomeIcons.personRunning,
@@ -70,7 +71,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
         NavigationDestination(
           selectedIcon: Icon(
             Icons.people_rounded,
-            color: theme.onPrimary,
+            color: theme.primary,
           ),
           icon: Icon(
             Icons.people_outline_rounded,
@@ -81,7 +82,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
         NavigationDestination(
           selectedIcon: Icon(
             Icons.account_circle_rounded,
-            color: theme.onPrimary,
+            color: theme.primary,
           ),
           icon: Icon(
             Icons.account_circle_outlined,
