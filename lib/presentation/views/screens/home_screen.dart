@@ -5,6 +5,7 @@ import 'package:fitquest/presentation/widgets/mini_map.dart';
 import 'package:fitquest/presentation/widgets/neumorphic_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         height: 100,
         child: TextButton.icon(
           icon: const Icon(
-            Icons.directions_run,
+            FontAwesomeIcons.personRunning,
             size: 30,
           ),
           label: const Text('Start Outdoor Run'),
