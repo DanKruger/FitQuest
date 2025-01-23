@@ -2,6 +2,7 @@ import 'package:fitquest/data/models/excercise_model.dart';
 import 'package:fitquest/presentation/views/screens/run_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ExerciseListItem extends StatelessWidget {
   final void Function()? onTap;
@@ -34,7 +35,7 @@ class ExerciseListItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.directions_run_rounded,
+                    FontAwesomeIcons.personRunning,
                     color: theme.primary,
                   ),
                   const SizedBox(width: 10),
