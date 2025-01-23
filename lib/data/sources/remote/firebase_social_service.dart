@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
+import 'package:fitquest/data/models/friend_request.dart';
 
 class FirebaseSocialService {
   late final FirebaseAuth _auth;
@@ -105,7 +106,7 @@ class FirebaseSocialService {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> getFriendRequestsStream() {
+  Stream<List<FriendRequest>> getFriendRequestsStream() {
     User? currentUser = _auth.currentUser;
     return _firestore
         .collection('users')
@@ -116,8 +117,15 @@ class FirebaseSocialService {
       if (data == null || !data.containsKey('friendRequests')) {
         return [];
       }
-      final friendRequests =
-          List<Map<String, dynamic>>.from(data['friendRequests']);
+      var beans = data['friendRequests'];
+      print(beans);
+      var ls = beans.map(
+        (json) => FriendRequest.fromJson(
+          json,
+        ),
+      );
+      print(ls);
+      final friendRequests = List<FriendRequest>.from(ls);
       return friendRequests;
     });
   }
@@ -127,13 +135,14 @@ class FirebaseSocialService {
     String id = currentUser!.uid;
 
     var userInfo = await _firestore.collection('users').doc(id).get();
-    var currentUserName = userInfo.get("first_name");
+    var currentUserName =
+        "${userInfo.get("first_name")} ${userInfo.get("last_name")}";
 
     await _firestore.collection('users').doc(userId).update({
       'friendRequests': FieldValue.arrayUnion([
         {
           'fromId': id,
-          'timestamp': DateTime.now().toLocal(),
+          'timestamp': DateTime.now().toLocal().toIso8601String(),
           "fromUser": currentUserName
         }
       ])

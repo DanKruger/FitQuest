@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitquest/data/models/friend_request.dart';
 import 'package:fitquest/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:fitquest/presentation/viewmodels/social_viewmodel.dart';
 import 'package:fitquest/presentation/views/screens/notifications_screen.dart';
@@ -58,7 +59,7 @@ class HomePageWelcomeBar extends StatelessWidget {
                       const SizedBox(
                         width: 15,
                       ),
-                      StreamBuilder<List<Map<String, dynamic>>>(
+                      StreamBuilder<List<FriendRequest>>(
                           stream: social.friendRequestsStream(),
                           builder: (context, streamSnapshot) {
                             final hasFriendRequests = streamSnapshot.hasData &&

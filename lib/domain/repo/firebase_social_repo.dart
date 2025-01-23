@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitquest/data/models/friend_request.dart';
 import 'package:fitquest/data/sources/remote/firebase_social_service.dart';
 import 'package:fitquest/domain/repo/abstract_repos/social_repository.dart';
 
@@ -44,7 +45,7 @@ class FirebaseSocialRepo implements SocialRepository {
   }
 
   @override
-  Stream<List<Map<String, dynamic>>> getFriendRequestsStream() {
+  Stream<List<FriendRequest>> getFriendRequestsStream() {
     return _firebaseSocialService.getFriendRequestsStream();
   }
 

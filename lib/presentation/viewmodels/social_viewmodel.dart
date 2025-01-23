@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fitquest/data/models/friend_model.dart';
+import 'package:fitquest/data/models/friend_request.dart';
 import 'package:fitquest/data/sources/connectivity_service.dart';
 import 'package:fitquest/domain/usecases/social_usecases/accept_friend_request_usecase.dart';
 import 'package:fitquest/domain/usecases/social_usecases/add_friend_usecase.dart';
@@ -28,7 +29,7 @@ class SocialViewmodel extends ChangeNotifier {
   }
 
   bool _isSearching = false;
-  Stream<List<Map<String, dynamic>>>? _friendRequestStream;
+  Stream<List<FriendRequest>>? _friendRequestStream;
 
   SocialViewmodel(
       {required SearchFriendsUsecase searchFriendsUsecase,
@@ -46,13 +47,12 @@ class SocialViewmodel extends ChangeNotifier {
     _listenToConnection();
   }
 
-  Stream<List<Map<String, dynamic>>>? get friendRequestStream =>
-      _friendRequestStream;
+  Stream<List<FriendRequest>>? get friendRequestStream => _friendRequestStream;
 
   bool get isSearching => _isSearching;
 
   set isSearching(searching) => _isSearching = searching;
-  Stream<List<Map<String, dynamic>>> friendRequestsStream() {
+  Stream<List<FriendRequest>> friendRequestsStream() {
     if (friendRequestStream == null) {
       _friendRequestStream = _addFriendUsecase.listenToFriendRequests();
       return friendRequestStream!;

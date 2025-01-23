@@ -1,4 +1,7 @@
+import 'package:fitquest/data/models/friend_request.dart';
 import 'package:fitquest/presentation/viewmodels/social_viewmodel.dart';
+import 'package:fitquest/presentation/widgets/exercise_list_item.dart';
+import 'package:fitquest/presentation/widgets/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +32,7 @@ class FriendRequestScreen extends StatelessWidget {
               ),
             );
           }
-          return StreamBuilder<List<Map<String, dynamic>>>(
+          return StreamBuilder<List<FriendRequest>>(
             stream: socialViewmodel.friendRequestsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -55,22 +58,26 @@ class FriendRequestScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final request = friendRequests[index];
                   return ListTile(
-                    title: Text('From: ${request['fromUser']}'),
+                    tileColor: theme.surface,
+                    title: Text(request.fromUser),
                     subtitle: Text(
-                      request['timestamp'].toDate().toString(),
+                      formatDateTime(request.timestamp.toLocal()),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
+                          style: squareButtonStyle(9, theme,
+                              orange: true, elevation: 0),
                           icon: const Icon(Icons.check),
                           color: Colors.green,
                           onPressed: () {
-                            socialViewmodel
-                                .acceptFriendRequest(request['fromId']);
+                            socialViewmodel.acceptFriendRequest(request.fromId);
                           },
                         ),
                         IconButton(
+                          style: squareButtonStyle(9, theme,
+                              orange: true, elevation: 0),
                           icon: const Icon(Icons.close),
                           color: Colors.red,
                           onPressed: () {

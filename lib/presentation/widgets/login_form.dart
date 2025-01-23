@@ -245,10 +245,10 @@ void _signInWithGoogle(AuthViewmodel auth, BuildContext context) async {
 }
 
 ButtonStyle squareButtonStyle(double radius, theme,
-    {double elevation = 3, bool orange = false}) {
+    {double elevation = 3, bool orange = false, Color? foregroundColor}) {
   return ElevatedButton.styleFrom(
       elevation: elevation,
-      foregroundColor: theme.primary,
+      foregroundColor: foregroundColor ?? theme.primary,
       backgroundColor: orange ? theme.primary.withOpacity(0.2) : theme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),

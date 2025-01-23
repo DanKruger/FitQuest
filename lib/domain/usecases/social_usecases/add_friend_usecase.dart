@@ -1,3 +1,4 @@
+import 'package:fitquest/data/models/friend_request.dart';
 import 'package:fitquest/domain/repo/abstract_repos/social_repository.dart';
 
 class AddFriendUsecase {
@@ -10,7 +11,7 @@ class AddFriendUsecase {
     await _socialRepository.sendFriendRequest(userId);
   }
 
-  Stream<List<Map<String, dynamic>>> listenToFriendRequests() {
+  Stream<List<FriendRequest>> listenToFriendRequests() {
     return _socialRepository.getFriendRequestsStream();
   }
 }
