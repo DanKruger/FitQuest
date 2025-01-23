@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -19,10 +20,10 @@ MarkerLayer buildMarkerLayer(MapViewmodel map, ColorScheme theme) {
         point: map.currentPosition!,
         child: Icon(
           Icons.circle_rounded,
-          color: theme.onSurface,
-          size: 25.0,
+          color: theme.primary,
+          size: 20.0,
           shadows: [
-            Shadow(color: theme.secondaryContainer, blurRadius: 5),
+            Shadow(color: theme.primary.withOpacity(0.7), blurRadius: 30),
           ],
         ),
       ),
@@ -118,6 +119,7 @@ class _RunScreenState extends State<RunScreen> {
           initialZoom: map.initialZoom,
           initialRotation: 0.0,
           keepAlive: true,
+          backgroundColor: theme.surface,
         ),
         children: [
           buildTileLayer(mapVariant),
@@ -126,7 +128,7 @@ class _RunScreenState extends State<RunScreen> {
           Positioned(
             bottom: 20,
             left: 20,
-            child: _buildStartButton(map, authModel),
+            child: _buildStartButton(map, authModel, theme),
           ),
           Positioned(
             bottom: 20,
@@ -155,10 +157,12 @@ class _RunScreenState extends State<RunScreen> {
     );
   }
 
-  SizedBox _buildStartButton(MapViewmodel map, AuthViewmodel authModel) {
+  SizedBox _buildStartButton(MapViewmodel map, AuthViewmodel authModel, theme) {
     return SizedBox(
       height: 50,
       child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: theme.surface, elevation: 10),
           onPressed: () {
             _showTimerDrawer(context, map, authModel);
             if (!map.isTracking) {
@@ -172,11 +176,11 @@ class _RunScreenState extends State<RunScreen> {
 
   IconData _getIconState(bool running, bool paused) {
     if (running) {
-      return Icons.timer_rounded;
+      return FontAwesomeIcons.stopwatch;
     } else if (paused) {
-      return Icons.play_arrow_rounded;
+      return FontAwesomeIcons.play;
     } else {
-      return Icons.directions_run;
+      return FontAwesomeIcons.personRunning;
     }
   }
 
@@ -206,7 +210,7 @@ class _RunScreenState extends State<RunScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.directions_run_rounded),
+                      const Icon(FontAwesomeIcons.personRunning),
                       Text("${mapViewmodel.totalDistance.floor().toString()}m"),
                     ],
                   ),
