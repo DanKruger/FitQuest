@@ -2,6 +2,7 @@ import 'package:fitquest/data/models/friend_model.dart';
 import 'package:fitquest/presentation/viewmodels/social_viewmodel.dart';
 import 'package:fitquest/presentation/views/screens/friend_request_screen.dart';
 import 'package:fitquest/presentation/views/screens/search_screen.dart';
+import 'package:fitquest/presentation/widgets/confirmation_dialog.dart';
 import 'package:fitquest/presentation/widgets/login_form.dart';
 import 'package:fitquest/presentation/widgets/neumorphic_widgets.dart';
 import 'package:flutter/material.dart';
@@ -179,62 +180,21 @@ class FriendsList extends StatelessWidget {
 
   void _showConfirmationDialog(
       BuildContext context, FriendModel? friend, SocialViewmodel social) {
+    String message = 'Are you sure you want to remove this friend?';
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        var theme = Theme.of(context).colorScheme;
-        return Center(
-          child: Card(
-            color: theme.surface,
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Are you sure you want to remove this friend?',
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 15),
-                  Text(
-                      '${friend?.firstName} will be removed from your friends list'),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 40,
-                        decoration: neumorphicBoxDecoration(9999, theme),
-                        child: SizedBox.expand(
-                          child: TextButton(
-                            onPressed: () async {
-                              await social.removeFriend(friend!.friendId);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      '${friend.firstName} has been removed'),
-                                ),
-                              );
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Yes'),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 50),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Nevermind'),
-                      )
-                    ],
-                  )
-                ],
+        return ConfirmationDialog(
+          message: message,
+          onConfirm: () async {
+            await social.removeFriend(friend!.friendId);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${friend.firstName} has been removed'),
               ),
-            ),
-          ),
+            );
+            Navigator.pop(context);
+          },
         );
       },
     );

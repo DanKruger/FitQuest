@@ -3,11 +3,13 @@ import 'dart:ui';
 import 'package:fitquest/data/models/excercise_model.dart';
 import 'package:fitquest/presentation/viewmodels/excercise_viewmodel.dart';
 import 'package:fitquest/presentation/views/screens/run_screen.dart';
+import 'package:fitquest/presentation/widgets/confirmation_dialog.dart';
 import 'package:fitquest/presentation/widgets/exercise_list_item.dart';
-import 'package:fitquest/presentation/widgets/neumorphic_widgets.dart';
+import 'package:fitquest/presentation/widgets/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
@@ -49,61 +51,65 @@ class _ExerciseViewScreenState extends State<ExerciseViewScreen> {
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
                   clipBehavior: Clip.antiAlias,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  // width: screenSize.width * 0.9,
-                  height: screenSize.height * 0.25,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20), // Outside Padding
+                  ),
+                  height: screenSize.height * 0.20,
                   child: ClipRect(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                       child: Container(
                         clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: theme.onSurface.withOpacity(0.1),
-                              width: 1,
-                            )),
-                        // color: theme.surface.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: theme.onSurface.withOpacity(0.1),
+                            width: 1,
+                          ),
+                        ),
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(10.0), // Inside Padding
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _buildInfo(screenSize, theme),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    child: TextButton(
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: _buildInfo(screenSize, theme),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                          padding: const EdgeInsets.all(10)),
                                       onPressed: () {
                                         _showConfirmationDialog(
                                             viewModel, context);
                                       },
                                       child: const Text('Remove from history'),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    child: Container(
-                                      clipBehavior: Clip.none,
-                                      height: 40,
-                                      decoration:
-                                          neumorphicBoxDecoration(9999, theme),
-                                      child: TextButton(
-                                        onPressed:
-                                            _replayRun, // Call replay on button press
-                                        child: const Text('Replay'),
+                                    TextButton(
+                                      style: squareButtonStyle(
+                                        10,
+                                        theme,
+                                        orange: true,
+                                        elevation: 0,
                                       ),
+                                      onPressed:
+                                          _replayRun, // Call replay on button press
+                                      child: const Icon(
+                                          FontAwesomeIcons.arrowRotateLeft),
                                     ),
-                                  ),
-                                ],
-                              ).animate().fadeIn(
-                                    delay: 200.ms,
-                                    curve: Curves.easeInOut,
-                                  ),
+                                  ],
+                                ).animate().fadeIn(
+                                      delay: 200.ms,
+                                      curve: Curves.easeInOut,
+                                    ),
+                              ),
                             ],
                           ),
                         ),
@@ -121,50 +127,22 @@ class _ExerciseViewScreenState extends State<ExerciseViewScreen> {
 
   void _showConfirmationDialog(
       ExcerciseViewmodel viewModel, BuildContext context) {
+    String message = 'Are you sure you want to remove this from your history?';
     showDialog(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: SizedBox(
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                          'Are you sure you want to remove this from your history?'),
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              viewModel.destroyExercise(
-                                widget.exerciseModel.id!,
-                              );
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Confirm'),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Cancel'),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
+      context: context,
+      builder: (context) {
+        return ConfirmationDialog(
+          message: message,
+          onConfirm: () {
+            viewModel.destroyExercise(
+              widget.exerciseModel.id!,
+            );
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -273,9 +251,20 @@ class _ExerciseViewScreenState extends State<ExerciseViewScreen> {
                 formatDateTime(widget.exerciseModel.date),
                 style: const TextStyle(fontWeight: FontWeight.w800),
               ),
-              Text(
-                widget.exerciseModel.type,
-                style: const TextStyle(fontStyle: FontStyle.italic),
+              Row(
+                children: [
+                  Icon(
+                    widget.exerciseModel.type.toLowerCase() == "run"
+                        ? FontAwesomeIcons.personRunning
+                        : FontAwesomeIcons.bicycle,
+                    size: 15,
+                  ),
+                  const SizedBox(width: 2),
+                  Text(
+                    widget.exerciseModel.type,
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ],
               ),
             ],
           ),
