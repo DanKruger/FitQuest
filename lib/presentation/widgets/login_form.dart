@@ -190,16 +190,16 @@ Widget buildAuthButtons() {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-              decoration: neumorphicBoxDecoration(999, theme),
-              height: 50,
-              // width: 200,
-              child: TextButton(
-                  // style: squareButtonStyle(),
-                  onPressed: () {
-                    _signInWithGoogle(auth, context);
-                  },
-                  child: const Icon(FontAwesomeIcons.google))),
+          SizedBox(
+            width: 75,
+            height: 50,
+            child: TextButton(
+                style: squareButtonStyle(40, theme, orange: true, elevation: 0),
+                onPressed: () {
+                  _signInWithGoogle(auth, context);
+                },
+                child: const Icon(FontAwesomeIcons.google)),
+          ),
           // const SizedBox(
           //   width: 15,
           // ),
@@ -244,9 +244,12 @@ void _signInWithGoogle(AuthViewmodel auth, BuildContext context) async {
   }
 }
 
-ButtonStyle squareButtonStyle(double radius, theme) {
+ButtonStyle squareButtonStyle(double radius, theme,
+    {double elevation = 3, bool orange = false}) {
   return ElevatedButton.styleFrom(
-      backgroundColor: theme.surface,
+      elevation: elevation,
+      foregroundColor: theme.primary,
+      backgroundColor: orange ? theme.primary.withOpacity(0.2) : theme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),
       ));
